@@ -1,0 +1,143 @@
+<html><head></head><body><module>
+<moduleprefs title="Google.com">
+<content type="html"><!--[CDATA[
+
+<!DOCTYPE html-->
+
+<title>EaglercraftX</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  #game_frame {
+    width: 100%;
+    height: 100%;
+    display: none; /* Se muestra después de presionar PLAY */
+    background-color: #000;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* --- MENU OVERLAY --- */
+  #menu_overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(50, 50, 50, 0.45);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+  }
+
+  /* --- BOTÓN PLAY MORADO --- */
+  #play_button {
+    font-size: 40px;
+    font-family: sans-serif;
+    padding: 20px 60px;
+    border: 3px solid #b36bff; /* borde morado */
+    color: #e5ccff;
+    background: rgba(120, 0, 255, 0.35);
+    cursor: pointer;
+    border-radius: 12px;
+
+    animation: float 3s infinite ease-in-out;
+    transition: 
+      transform 0.25s ease,
+      background 0.25s ease,
+      box-shadow 0.25s ease;
+
+    opacity: 0;
+    white-space: nowrap;
+  }
+
+  /* Hover → grande, brillante, movimiento */
+  #play_button:hover {
+    transform: scale(1.17) translateY(-6px);
+    background: rgba(160, 60, 255, 0.45);
+    box-shadow: 0 0 18px rgba(180, 60, 255, 0.7);
+  }
+
+  /* Letras individuales */
+  .letter {
+    opacity: 0;
+    animation: typewriter 1s forwards;
+    display: inline-block;
+  }
+
+  @keyframes typewriter {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0px); }
+  }
+
+  @keyframes float {
+    0%   { transform: translateY(0px); }
+    50%  { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+  }
+</style>
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/mece188/feh@main/classes.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/mece188/feh@main/fix-webm-duration.js"></script>
+
+<script>
+window.addEventListener("load", () => {
+
+  const playButton = document.getElementById("play_button");
+  const menu = document.getElementById("menu_overlay");
+  const game = document.getElementById("game_frame");
+
+  /* --- Animación de letras del botón --- */
+  const text = "PLAY";
+  playButton.innerHTML = "";
+  [...text].forEach((char, i) => {
+    let span = document.createElement("span");
+    span.textContent = char;
+    span.classList.add("letter");
+    span.style.animationDelay = (i * 0.25) + "s";
+    playButton.appendChild(span);
+  });
+
+  /* Botón aparece después de la animación */
+  setTimeout(() => playButton.style.opacity = "1", 1200);
+
+  /* --- CLICK EN PLAY --- */
+  playButton.onclick = () => {
+    menu.style.display = "none";
+    game.style.display = "flex";
+    main(); // iniciar Minecraft
+  };
+
+  /* --- CONFIGURACIÓN DEL JUEGO --- */
+  window.eaglercraftXOpts = {
+    container: "game_frame",
+    assetsURI: "https://cdn.jsdelivr.net/gh/mece188/feh@main/assets.epk",
+    localesURI: "lang/",
+    servers: [
+      { addr: "wss://mc.sealcentral.co", name: "HOHO GAMES" }
+    ]
+  };
+
+});
+</script>
+
+<!-- MENU PLAY -->
+<div id="menu_overlay">
+  <div id="play_button"></div>
+</div>
+
+<!-- JUEGO -->
+<div id="game_frame" class="_eaglercraftX_root_element">
+  <canvas class="_eaglercraftX_canvas_element"></canvas>
+</div>
+
+]]&gt;</content>
+</moduleprefs></module>
+</body></html>

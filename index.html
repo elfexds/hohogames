@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>HoHo Games</title>
+    <style>
+        body { 
+            font-family: Arial; 
+            margin:0; 
+            overflow:hidden;
+            background:black;
+            color:white;
+        }
+
+        /* Canvas para partículas */
+        #particles {
+            position: fixed;
+            top:0;
+            left:0;
+            width:100%;
+            height:100%;
+            z-index:-1;
+        }
+
+        h1 { 
+            text-align:center; 
+            padding:20px; 
+            margin:0; 
+            background:rgba(0,0,0,0.6);
+            backdrop-filter: blur(5px);
+        }
+
+        .grid { 
+            display:grid; 
+            grid-template-columns:repeat(auto-fill, minmax(200px,1fr)); 
+            gap:20px; 
+            padding:20px; 
+        }
+
+        .game { 
+            background:white; 
+            border-radius:8px; 
+            padding:10px; 
+            text-align:center; 
+            box-shadow:0 2px 5px rgba(255,255,255,0.3);
+            transform:scale(1);
+            transition:transform 0.25s, box-shadow 0.25s;
+        }
+
+        .game:hover {
+            transform:scale(1.07);
+            box-shadow:0 0 20px rgba(255,255,255,0.6);
+        }
+
+        .game img { 
+            width:100%; 
+            height:140px; 
+            object-fit:cover; 
+            border-radius:6px; 
+        }
+
+        .game-title { 
+            margin-top:10px; 
+            font-weight:bold; 
+            color:black; 
+        }
+
+        a { 
+            text-decoration:none; 
+            color:black; 
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="particles"></canvas>
+
+<h1>Welcome to HoHo Games</h1>
+<div style="padding: 8px 20px; text-align:center; background: rgba(0,0,0,0.0);">
+    <input id="game-search" placeholder="Search games..." style="max-width:320px;width:50%;padding:8px 10px;border-radius:8px;border:1px solid #313131;background:#0b0b0b;color:#fff;outline:none;" />
+</div>
+
+<div class="grid" id="games-grid">
+    <!-- Tus juegos en 1 línea -->
+    <a href="games/Tag.html" class="game"><img src="img/tag.png"><div class="game-title">Tag</div></a>
+    <a href="games/eaglercraft.html" class="game"><img src="img/eaglercraft.png"><div class="game-title">eaglercraft</div></a>
+    <a href="games/badparenting/" class="game"><img src="img/badparenting.png"><div class="game-title">bad parenting</div></a>
+    <a href="games/bunny-ada/" class="game"><img src="img/bunnyada.gif"><div class="game-title">bunny ada</div></a>
+    <a href="games/scramjet/" class="game"><img src="img/bunnyada.gif"><div class="game-title">scramjet</div></a>
+</div>
+
+<script>
+// Partículas
+const canvas = document.getElementById("particles");
+const ctx = canvas.getContext("2d");
+
+function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+resize();
+window.onresize = resize;
+
+const particles = [];
+for (let i = 0; i < 120; i++) {
+    particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        size: 2 + Math.random() * 3,
+        speedX: (Math.random() - 0.5) * 0.5,
+        speedY: (Math.random() - 0.5) * 0.5
+    });
+}
+
+function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "white";
+    particles.forEach(p => {
+        p.x += p.speedX;
+        p.y += p.speedY;
+
+        if (p.x < 0) p.x = canvas.width;
+        if (p.x > canvas.width) p.x = 0;
+        if (p.y < 0) p.y = canvas.height;
+        if (p.y > canvas.height) p.y = 0;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+    });
+
+    requestAnimationFrame(animate);
+}
+animate();
+
+// Búsqueda de juegos
+const searchInput = document.getElementById('game-search');
+const grid = document.getElementById('games-grid');
+
+searchInput.addEventListener('input', (e) => {
+    const q = e.target.value.trim().toLowerCase();
+    const games = grid.querySelectorAll('.game');
+    games.forEach(g => {
+        const titleEl = g.querySelector('.game-title');
+        const title = titleEl ? titleEl.textContent.toLowerCase() : '';
+        const href = (g.getAttribute('href') || '').toLowerCase();
+        g.style.display = (!q || title.includes(q) || href.includes(q)) ? '' : 'none';
+    });
+});
+
+searchInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+        const first = Array.from(grid.querySelectorAll('.game')).find(g => g.style.display !== 'none');
+        if (first) window.location.href = first.getAttribute('href');
+    }
+});
+</script>
+
+</body>
+</html>
